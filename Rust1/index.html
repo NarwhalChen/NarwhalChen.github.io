@@ -1,0 +1,202 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Rust变量绑定与解构 | NarwhalsHome</title><meta name="author" content="Nahuel Chen,spixel.xi@gmail.com"><meta name="copyright" content="Nahuel Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Rust变量绑定与解构为什么要手动设置变量可变的变量为编程提供灵活性，不可变的变量则提供安全性。但是Rust选择了两者我都要，既要灵活性又要安全性。 变量命名在命名方面，和其它语言没有区别，不过当给变量命名时，需要遵循 Rust 命名规范。 变量绑定在其它语言中，我们用 var a &#x3D; &quot;hello world&quot; 的方式给 a 赋值，也就是把等式右边的 &quot;hello">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust变量绑定与解构">
+<meta property="og:url" content="https://narwhals.home.com/Rust1/index.html">
+<meta property="og:site_name" content="NarwhalsHome">
+<meta property="og:description" content="Rust变量绑定与解构为什么要手动设置变量可变的变量为编程提供灵活性，不可变的变量则提供安全性。但是Rust选择了两者我都要，既要灵活性又要安全性。 变量命名在命名方面，和其它语言没有区别，不过当给变量命名时，需要遵循 Rust 命名规范。 变量绑定在其它语言中，我们用 var a &#x3D; &quot;hello world&quot; 的方式给 a 赋值，也就是把等式右边的 &quot;hello">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/125920907?s=400&u=94c16cddbda42eb3444feb12de5ab46e59c731e2&v=4">
+<meta property="article:published_time" content="2024-04-04T18:08:56.000Z">
+<meta property="article:modified_time" content="2024-04-04T19:00:03.409Z">
+<meta property="article:author" content="Nahuel Chen">
+<meta property="article:tag" content="Rust">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://avatars.githubusercontent.com/u/125920907?s=400&u=94c16cddbda42eb3444feb12de5ab46e59c731e2&v=4"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://narwhals.home.com/Rust1/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Rust变量绑定与解构',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-04-04 14:00:03'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://avatars.githubusercontent.com/u/125920907?s=400&amp;u=94c16cddbda42eb3444feb12de5ab46e59c731e2&amp;v=4" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="NarwhalsHome"><span class="site-name">NarwhalsHome</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Rust变量绑定与解构</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-04-04T18:08:56.000Z" title="发表于 2024-04-04 13:08:56">2024-04-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-04-04T19:00:03.409Z" title="更新于 2024-04-04 14:00:03">2024-04-04</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Rust变量绑定与解构"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Rust变量绑定与解构"><a href="#Rust变量绑定与解构" class="headerlink" title="Rust变量绑定与解构"></a>Rust变量绑定与解构</h1><h3 id="为什么要手动设置变量"><a href="#为什么要手动设置变量" class="headerlink" title="为什么要手动设置变量"></a>为什么要手动设置变量</h3><p>可变的变量为编程提供灵活性，不可变的变量则提供安全性。但是Rust选择了两者我都要，既要灵活性又要安全性。</p>
+<h2 id="变量命名"><a href="#变量命名" class="headerlink" title="变量命名"></a>变量命名</h2><p>在命名方面，和其它语言没有区别，不过当给变量命名时，需要遵循 <a target="_blank" rel="noopener" href="https://course.rs/practice/naming.html">Rust 命名规范</a>。</p>
+<h2 id="变量绑定"><a href="#变量绑定" class="headerlink" title="变量绑定"></a>变量绑定</h2><p>在其它语言中，我们用 <code>var a = &quot;hello world&quot;</code> 的方式给 <code>a</code> 赋值，也就是把等式右边的 <code>&quot;hello world&quot;</code> 字符串赋值给变量 <code>a</code> ，而在 Rust 中，我们这样写： <code>let a = &quot;hello world&quot;</code> ，同时给这个过程起了另一个名字：<strong>变量绑定</strong>。<br>    为什么说是绑定呢，因为这涉及到Rust的核心原则：所有权。也就是任何内存对象都是有主人的。<code>let a = &quot;hello world&quot;</code>就是将 <code>hello world</code> 的主人设定为 <code>a</code> 。关于所有权的具体信息之后会讲到。</p>
+<h2 id="变量可变性"><a href="#变量可变性" class="headerlink" title="变量可变性"></a>变量可变性</h2><p>Rust 的变量在默认情况下是<strong>不可变的</strong>，这是为了让编写的代码更安全，性能也更好。我们也可以可以通过 <code>mut</code> 关键字让变量变为<strong>可变的</strong>，让设计更灵活。</p>
+<p>如果变量 <code>a</code> 不可变，那么一旦为它绑定值，就不能再修改 <code>a</code>。<br>举个例子</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">fn main() &#123;</span><br><span class="line">    let x = 5;</span><br><span class="line">    println!(&quot;The value of x is: &#123;&#125;&quot;, x);</span><br><span class="line">    x = 6;</span><br><span class="line">    println!(&quot;The value of x is: &#123;&#125;&quot;, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>保存文件，再使用 <code>cargo run</code> 运行它，迎面而来的是一条错误提示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$ cargo run</span><br><span class="line">   Compiling variables v0.1.0 (file:///projects/variables)</span><br><span class="line">error[E0384]: cannot assign twice to immutable variable `x`</span><br><span class="line"> --&gt; src/main.rs:4:5</span><br><span class="line">  |</span><br><span class="line">2 |     let x = 5;</span><br><span class="line">  |         -</span><br><span class="line">  |         |</span><br><span class="line">  |         first assignment to `x`</span><br><span class="line">  |         help: consider making this binding mutable: `mut x`</span><br><span class="line">3 |     println!(&quot;The value of x is: &#123;&#125;&quot;, x);</span><br><span class="line">4 |     x = 6;</span><br><span class="line">  |     ^^^^^ cannot assign twice to immutable variable</span><br><span class="line"></span><br><span class="line">error: aborting due to previous error</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>我们可以看到错误原因：<code>cannot assign twice to immutable variable x ，因为我们想为不可变的 </code>x&#96; 变量再次赋值。<br>    这种错误是为了避免无法预期的错误发生在我们的变量上：一个变量往往被多处代码所使用，其中一部分代码假定该变量的值永远不会改变，而另外一部分代码却无情的改变了这个值，在实际开发过程中，这个错误是很难被发现的，特别是在多线程编程中。<br>    这种规则让我们的代码变得非常清晰，只有你想让你的变量改变时，它才能改变，这样就不会造成心智上的负担，也给别人阅读代码带来便利。</p>
+<p>但是可变性也非常重要，否则我们每次要改变变量，就要重新生成一个对象，在拥有大量对象的场景，性能会变得非常低下，内存拷贝的成本异常的高。</p>
+<p>在 Rust 中，可变性很简单，只要在变量名前加一个 <code>mut</code> 即可, 而且这种显式的声明方式还会给后来人传达这样的信息：这个变量在后面代码部分会发生改变。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">fn main() &#123;</span><br><span class="line">    let mut x = 5;</span><br><span class="line">    println!(&quot;The value of x is: &#123;&#125;&quot;, x);</span><br><span class="line">    x = 6;</span><br><span class="line">    println!(&quot;The value of x is: &#123;&#125;&quot;, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>像这样再次运行就不会报错了。</p>
+<h2 id="使用下划线开头忽略未使用的变量"><a href="#使用下划线开头忽略未使用的变量" class="headerlink" title="使用下划线开头忽略未使用的变量"></a>使用下划线开头忽略未使用的变量</h2><p>如果你创建了一个变量却不在任何地方使用它，Rust 通常会给你一个警告，因为这可能会是个 BUG。但是有时创建一个不会被使用的变量是有用的，比如你正在设计原型或刚刚开始一个项目。这时<strong>你希望告诉 Rust 不要警告未使用的变量，为此可以用下划线作为变量名的开头</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fn main() &#123;</span><br><span class="line">    let _x = 5; //告诉rust忽略该变量</span><br><span class="line">    let y = 10;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行之后触发警告：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">warning: unused variable: `y`</span><br><span class="line"> --&gt; src/main.rs:3:9</span><br><span class="line">  |</span><br><span class="line">3 |     let y = 10;</span><br><span class="line">  |         ^ help: 如果 y 故意不被使用，请添加一个下划线前缀: `_y`</span><br><span class="line">  |</span><br><span class="line">  = note: `#[warn(unused_variables)]` on by default</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>可以看到，两个变量都是只有声明，没有使用，但是编译器却独独给出了 <code>y</code> 未被使用的警告，充分说明了 <code>_</code> 变量名前缀在这里发挥的作用。</p>
+<p>值得注意的是，这里编译器还很善意的给出了提示( Rust 的编译器非常聪明，这里的提示只是小意思 ): 将 <code>y</code> 修改 <code>_y</code> 即可。</p>
+<h2 id="变量解构"><a href="#变量解构" class="headerlink" title="变量解构"></a>变量解构</h2><p><code>let</code> 表达式不仅仅用于变量的绑定，还能进行复杂变量的解构：从一个相对复杂的变量中，匹配出该变量的一部分内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">fn main() &#123;</span><br><span class="line">    let (a, mut b): (bool,bool) = (true, false);</span><br><span class="line">    // a = true,不可变; b = false，可变</span><br><span class="line">    println!(&quot;a = &#123;:?&#125;, b = &#123;:?&#125;&quot;, a, b);</span><br><span class="line"></span><br><span class="line">    b = true;</span><br><span class="line">    assert_eq!(a, b);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="解构式赋值"><a href="#解构式赋值" class="headerlink" title="解构式赋值"></a>解构式赋值</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">struct Struct &#123;</span><br><span class="line">    e: i32</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fn main() &#123;</span><br><span class="line">    let (a, b, c, d, e);</span><br><span class="line"></span><br><span class="line">    (a, b) = (1, 2);</span><br><span class="line">    // _ 代表匹配一个值，但是我们不关心具体的值是什么，因此没有使用一个变量名而是使用了 _</span><br><span class="line">    [c, .., d, _] = [1, 2, 3, 4, 5];</span><br><span class="line">    Struct &#123; e, .. &#125; = Struct &#123; e: 5 &#125;;</span><br><span class="line"></span><br><span class="line">    assert_eq!([1, 2, 1, 4, 5], [a, b, c, d, e]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种使用方式跟之前的 <code>let</code> 保持了一致性，但是 <code>let</code> 会重新绑定，而这里仅仅是对之前绑定的变量进行再赋值。</p>
+<p>需要注意的是，使用 <code>+=</code> 的赋值语句还不支持解构式赋值。<br>    这里用到了模式匹配的一些语法，可以在看过模式匹配后，再回头来看。</p>
+<h2 id="变量和常量之间的差异"><a href="#变量和常量之间的差异" class="headerlink" title="变量和常量之间的差异"></a>变量和常量之间的差异</h2><p>变量的值不能更改可能让你想起其他另一个很多语言都有的编程概念：<strong>常量</strong>(<em>constant</em>)。与不可变变量一样，常量也是绑定到一个常量名且不允许更改的值，但是常量和变量之间存在一些差异：</p>
+<ul>
+<li>常量不允许使用 <code>mut</code>。<strong>常量不仅仅默认不可变，而且自始至终不可变</strong>，因为常量在编译完成后，已经确定它的值。</li>
+<li>常量使用 <code>const</code> 关键字而不是 <code>let</code> 关键字来声明，并且值的类型<strong>必须</strong>标注。</li>
+</ul>
+<p>我们将在下一节数据类型中介绍，因此现在暂时无需关心细节。</p>
+<p>下面是一个常量声明的例子，其常量名为 <code>MAX_POINTS</code>，值设置为 <code>100,000</code>。（Rust 常量的命名约定是全部字母都使用大写，并使用下划线分隔单词，另外对数字字面量可插入下划线以提高可读性）：<br><code>const MAX_POINTS: u32 = 100_000;</code><br>常量可以在任意作用域内声明，包括全局作用域，在声明的作用域内，常量在程序运行的整个过程中都有效。对于需要在多处代码共享一个不可变的值时非常有用，例如游戏中允许玩家赚取的最大点数或光速。</p>
+<h2 id="变量屏蔽"><a href="#变量屏蔽" class="headerlink" title="变量屏蔽"></a>变量屏蔽</h2><p>Rust 允许声明相同的变量名，在后面声明的变量会遮蔽掉前面声明的，如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">fn main() &#123;</span><br><span class="line">    let x = 5; //x1</span><br><span class="line">    // 在main函数的作用域内对之前的x进行遮蔽</span><br><span class="line">    let x = x + 1; //x2， 使用x1</span><br><span class="line"></span><br><span class="line">    &#123;</span><br><span class="line">        // 在当前的花括号作用域内，对之前的x进行遮蔽</span><br><span class="line">        let x = x * 2; //x3， x*2使用x2</span><br><span class="line">        println!(&quot;The value of x in the inner scope is: &#123;&#125;&quot;, x);</span><br><span class="line">        // 此处使用x3</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    println!(&quot;The value of x is: &#123;&#125;&quot;, x); //使用x2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个程序首先将数值 <code>5</code> 绑定到 <code>x</code>，然后通过重复使用 <code>let x =</code> 来遮蔽之前的 <code>x</code>，并取原来的值加上 <code>1</code>，所以 <code>x</code> 的值变成了 <code>6</code>。第三个 <code>let</code> 语句同样遮蔽前面的 <code>x</code>，取之前的值并乘上 <code>2</code>，得到的 <code>x</code> 最终值为 <code>12</code>。当运行此程序，将输出以下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cargo run</span><br><span class="line">   Compiling variables v0.1.0 (file:///projects/variables)</span><br><span class="line">   ...</span><br><span class="line">The value of x in the inner scope is: 12</span><br><span class="line">The value of x is: 6</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这和 <code>mut</code> 变量的使用是不同的，第二个 <code>let</code> 生成了完全不同的新变量，两个变量只是恰好拥有同样的名称，涉及一次内存对象的再分配 ，而 <code>mut</code> 声明的变量，可以修改同一个内存地址上的值，并不会发生内存对象的再分配，性能要更好。</p>
+<p>变量遮蔽的用处在于，如果你在某个作用域内无需再使用之前的变量（在被遮蔽后，无法再访问到之前的同名变量），就可以重复的使用变量名字，而不用绞尽脑汁去想更多的名字。</p>
+<p>例如，假设有一个程序要统计一个空格字符串的空格数量：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 字符串类型</span><br><span class="line">let spaces = &quot;   &quot;;</span><br><span class="line">// usize数值类型</span><br><span class="line">let spaces = spaces.len();</span><br></pre></td></tr></table></figure>
+<p>这种结构是允许的，因为第一个 <code>spaces</code> 变量是一个字符串类型，第二个 <code>spaces</code> 变量是一个全新的变量且和第一个具有相同的变量名，且是一个数值类型。所以变量遮蔽可以帮我们节省些脑细胞，不用去想如 <code>spaces_str</code> 和 <code>spaces_num</code> 此类的变量名；相反我们可以重复使用更简单的 <code>spaces</code> 变量名。如果你不用 <code>let</code> :</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let mut spaces = &quot;   &quot;;</span><br><span class="line">spaces = spaces.len();</span><br></pre></td></tr></table></figure>
+<p>运行之后编译器报错：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ cargo run</span><br><span class="line">   Compiling variables v0.1.0 (file:///projects/variables)</span><br><span class="line">error[E0308]: mismatched types</span><br><span class="line"> --&gt; src/main.rs:3:14</span><br><span class="line">  |</span><br><span class="line">3 |     spaces = spaces.len();</span><br><span class="line">  |              ^^^^^^^^^^^^ expected `&amp;str`, found `usize`</span><br><span class="line"></span><br><span class="line">error: aborting due to previous error</span><br></pre></td></tr></table></figure>
+
+<p>显然，Rust 对类型的要求很严格，不允许将整数类型 <code>usize</code> 赋值给字符串类型。<code>usize</code> 是一种 CPU 相关的整数类型，接下来的基本类型章节会详细介绍。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://Narwhals.home.com">Nahuel Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://narwhals.home.com/Rust1/">https://narwhals.home.com/Rust1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://Narwhals.home.com" target="_blank">NarwhalsHome</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Rust/">Rust</a></div><div class="post_share"><div class="social-share" data-image="https://avatars.githubusercontent.com/u/125920907?s=400&amp;u=94c16cddbda42eb3444feb12de5ab46e59c731e2&amp;v=4" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/125920907?s=400&amp;u=94c16cddbda42eb3444feb12de5ab46e59c731e2&amp;v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Nahuel Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/NarwhalChen" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Rust%E5%8F%98%E9%87%8F%E7%BB%91%E5%AE%9A%E4%B8%8E%E8%A7%A3%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">Rust变量绑定与解构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%89%8B%E5%8A%A8%E8%AE%BE%E7%BD%AE%E5%8F%98%E9%87%8F"><span class="toc-number">1.0.1.</span> <span class="toc-text">为什么要手动设置变量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E5%91%BD%E5%90%8D"><span class="toc-number">1.1.</span> <span class="toc-text">变量命名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E7%BB%91%E5%AE%9A"><span class="toc-number">1.2.</span> <span class="toc-text">变量绑定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E5%8F%AF%E5%8F%98%E6%80%A7"><span class="toc-number">1.3.</span> <span class="toc-text">变量可变性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E4%B8%8B%E5%88%92%E7%BA%BF%E5%BC%80%E5%A4%B4%E5%BF%BD%E7%95%A5%E6%9C%AA%E4%BD%BF%E7%94%A8%E7%9A%84%E5%8F%98%E9%87%8F"><span class="toc-number">1.4.</span> <span class="toc-text">使用下划线开头忽略未使用的变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E8%A7%A3%E6%9E%84"><span class="toc-number">1.5.</span> <span class="toc-text">变量解构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E6%9E%84%E5%BC%8F%E8%B5%8B%E5%80%BC"><span class="toc-number">1.6.</span> <span class="toc-text">解构式赋值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E5%92%8C%E5%B8%B8%E9%87%8F%E4%B9%8B%E9%97%B4%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="toc-number">1.7.</span> <span class="toc-text">变量和常量之间的差异</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E5%B1%8F%E8%94%BD"><span class="toc-number">1.8.</span> <span class="toc-text">变量屏蔽</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/Rust1/" title="Rust变量绑定与解构">Rust变量绑定与解构</a><time datetime="2024-04-04T18:08:56.000Z" title="发表于 2024-04-04 13:08:56">2024-04-04</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Nahuel Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/fireworks.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
